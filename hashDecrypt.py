@@ -67,7 +67,11 @@ def hashDecrypt_somd5_com(hash):
     hashData= {'hash': ''}
     hashData['hash'] = hash
     url = "https://www.somd5.com/search.php"
-    reJson = json.loads(requests.post(url=url, headers=g_header, data=hashData, timeout=60).content.decode())
+    try:
+        reJson = json.loads(requests.post(url=url, headers=g_header, data=hashData,timeout=10).content.decode())
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     # print(reJson)
     if 'data' in reJson:
         resultJson['data'] = reJson['data']
@@ -106,7 +110,11 @@ def hashDecrypt_md5decrypt_net(hash):
         resultJson['text'] = '无法识别'
         return resultJson
     url = 'https://md5decrypt.net/en/Api/api.php?hash=' + hash + '&hash_type=' + hash_type + '&email=w666q@qq.com&code=c1eb4ed57d09e646'
-    reHtml = requests.get(url=url, headers=g_header, timeout=60).content.decode()
+    try:
+        reHtml = requests.get(url=url, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     if reHtml: #如果返回结果不为空
         if reHtml == 'ERROR CODE : 001':
             resultJson['text'] = '每天超过400允许的请求'
@@ -139,7 +147,11 @@ def hashDecrypt_hashtoolkit_com(hash):
     resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
     resultJson['source'] = 'hashtoolkit.com'
     url = 'http://hashtoolkit.com/reverse-hash?hash=' + hash
-    reHtml = requests.get(url=url, headers=g_header, timeout=60).content.decode()
+    try:
+        reHtml = requests.get(url=url, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     # print(reHtml)
     pattern= re.compile(r'<td(.*?)</td>',re.S)
     result = re.findall(pattern,reHtml)
@@ -171,7 +183,11 @@ def hashDecrypt_md5online_org(hash):
     resultJson['source'] = 'md5online.org'
     url = 'https://www.md5online.org/md5-decrypt.html'
     hashData= {'hash':hash}
-    reHtml = requests.post(url=url, data=hashData, headers=g_header, timeout=60).content.decode()
+    try:
+        reHtml = requests.post(url=url, data=hashData, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     pattern = re.compile(r'<span class="result">(.*?)</span>',re.S)
     result = re.findall(pattern,reHtml)
     pattern = re.compile(r'<b>(.*?)</b>')
@@ -191,7 +207,11 @@ def hashDecrypt_md5online_es(hash):
     resultJson['source'] = 'md5online.es'
     url = 'https://md5online.es/'
     hashData= {'hash':hash}
-    reHtml = requests.post(url=url, data=hashData, headers=g_header, timeout=60).content.decode()
+    try:
+        reHtml = requests.post(url=url, data=hashData, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     pattern = re.compile(r"<span class='result'>(.*?)</span>",re.S)
     result = re.findall(pattern,reHtml)
     pattern = re.compile(r'<b>(.*?)</b>')
@@ -211,8 +231,11 @@ def hashDecrypt_md5_my_addr(hash):
     resultJson['source'] = 'md5.my-addr.com'
     url = 'http://md5.my-addr.com/md5_decrypt-md5_cracker_online/md5_decoder_tool.php'
     hashData= {'md5':hash}
-    reHtml = requests.post(url=url, data=hashData, headers=g_header, timeout=60).content.decode()
-    # print(reHtml)
+    try:
+        reHtml = requests.post(url=url, data=hashData, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     pattern = re.compile(r"Hashed string</span>:(.*?)</div>",re.S)
     result = re.findall(pattern,reHtml)
     # print(result)
@@ -229,7 +252,11 @@ def hashDecrypt_md5_ovh(hash):
     resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
     resultJson['source'] = 'md5.ovh'
     url = 'https://www.md5.ovh/index.php?result=json&md5=' + hash
-    reStr =requests.get(url=url, headers=g_header, timeout=60).content.decode()
+    try:
+        reStr =requests.get(url=url, headers=g_header,timeout=10).content.decode()
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     if reStr[0] == 'E':  #表示输入位数错误
         resultJson['text'] = 'md5位数错误'
     elif reStr[0] =='[':
@@ -253,8 +280,12 @@ def hashDecrypt_tool_chinaz_com(hash):
     resultJson['source'] = 'tool.chinaz.com'
     url = 'http://tool.chinaz.com/tools/md5.aspx'
     hashData= {'q':hash,'ende':'1','md5type':'0'}
-    reHtml=requests.post(url=url, headers=g_header, data=hashData, timeout=60).content.decode()
-    # print(reHtml)
+    try:
+        reHtml=requests.post(url=url, headers=g_header, data=hashData,timeout=10).content.decode()
+        # print(reHtml)
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     pattern = re.compile(r'id="MD5Result">(.*?)</textarea>',re.S)
     result = re.findall(pattern,reHtml)
     # print(result)
@@ -274,7 +305,11 @@ def hashDecrypt_ttmd5_com(hash):
     resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
     resultJson['source'] = 'ttmd5.com'
     url = 'http://www.ttmd5.com/do.php?c=Decode&m=getMD5&md5=' + hash
-    reJson = json.loads(requests.get(url=url, headers=g_header).content.decode())
+    try:
+        reJson = json.loads(requests.get(url=url, headers=g_header,timeout=10).content.decode())
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     if reJson['flag'] ==1:
         resultJson['data'] = reJson['plain']
         resultJson['text'] = '破解成功'
@@ -292,8 +327,12 @@ def hashDecrypt_pmd5_com(hash):
     resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
     resultJson['source'] = 'pmd5.com'
     url = 'https://api.pmd5.com/pmd5api/pmd5?pwd=' + hash
-    reJson = json.loads(requests.get(url=url, headers=g_header).content.decode())
-    # print(reJson)
+    try:
+        reJson = json.loads(requests.get(url=url, headers=g_header,timeout=10).content.decode())
+        # print(reJson)
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     if reJson['code'] == 0:
         key = list(reJson['result'])[0]
         resultJson['data'] = reJson['result'][key]
@@ -320,10 +359,12 @@ def hashDecrypt_chamd5_org(hash):
         if ':' in hash:
             data_type = '10'
             hashdata = {'hash': hash, 'type': data_type}
-            reJson = \
-            json.loads(requests.post(url=url, headers=g_header, json=hashdata, cookies=cookieJson).content.decode())[
-                'd']
-            reJson = json.loads(reJson)
+            try:
+                reJson = json.loads(requests.post(url=url, headers=g_header, json=hashdata, cookies=cookieJson,timeout=10).content.decode())['d']
+                reJson = json.loads(reJson)
+            except:
+                resultJson['text'] = '访问失败，检查网络'
+                return resultJson
             if reJson['success'] == 'True':
                 resultJson['type'] = 'md5($pass.$salt)'
                 resultJson['data'] = reJson['result']
@@ -332,11 +373,12 @@ def hashDecrypt_chamd5_org(hash):
             else:
                 data_type = '2610'
                 hashdata = {'hash': hash, 'type': data_type}
-                reJson = \
-                    json.loads(
-                        requests.post(url=url, headers=g_header, json=hashdata, cookies=cookieJson).content.decode())[
-                        'd']
-                reJson = json.loads(reJson)
+                try:
+                    reJson = json.loads(requests.post(url=url, headers=g_header, json=hashdata, cookies=cookieJson,timeout=10).content.decode())['d']
+                    reJson = json.loads(reJson)
+                except:
+                    resultJson['text'] = '访问失败，检查网络'
+                    return resultJson
                 if reJson['success'] == 'True':
                     resultJson['type'] = 'md5(md5($pass).$salt);VB;DZ'
                     resultJson['data'] = reJson['result']
@@ -349,8 +391,12 @@ def hashDecrypt_chamd5_org(hash):
             resultJson['text'] = '格式不正确'
             return resultJson
     hashdata = {'hash':hash,'type':data_type}
-    reJson = json.loads(requests.post(url=url,headers=g_header,json=hashdata,cookies=cookieJson).content.decode())['d']
-    reJson = json.loads(reJson)
+    try:
+        reJson = json.loads(requests.post(url=url,headers=g_header,json=hashdata,cookies=cookieJson,timeout=10).content.decode())['d']
+        reJson = json.loads(reJson)
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     if reJson['success'] == 'True':
         resultJson['data'] = reJson['result']
         resultJson['text'] = '破解成功'
@@ -365,7 +411,11 @@ def hashDecrypt_3464_com(hash):
     resultJson['type'] = 'md5'
     url = 'http://www.3464.com/Tools/MD5/jiemi.asp'
     hashData = {'zf':hash,'Submit':'MD5解密'}
-    reHtml = requests.post(url=url,headers=g_header,data=hashData).content.decode('gbk')
+    try:
+        reHtml = requests.post(url=url,headers=g_header,data=hashData,timeout=10).content.decode('gbk')
+    except:
+        resultJson['text'] = '访问失败，检查网络'
+        return resultJson
     pattern = re.compile(r'function copy(.*?)</table>',re.S)
     reHtml = re.findall(pattern,reHtml)[0]
     if reHtml :
