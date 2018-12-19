@@ -1,13 +1,64 @@
 # -*- coding: utf-8 -*-  
 import json
 import re
+import time
+import pyperclip
 import requests
-import threading,time
 
 # common
 header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'}
 
 ########################################################################################################################
+
+# #cmd5.com接口解密hash
+# def hashDecrypt_cmd5_com(hash):
+#     resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
+#     resultJson['source'] = 'cmd5.com'
+#     hashData= {'__VIEWSTATE': '',
+#                'ctl00$ContentPlaceHolder1$HiddenFieldAliCode':'',
+#                'ctl00$ContentPlaceHolder1$HiddenField1':'',
+#                'ctl00$ContentPlaceHolder1$HiddenField2':'',
+#                'ctl00$ContentPlaceHolder1$TextBoxInput':hash,
+#                'ctl00$ContentPlaceHolder1$Button1':'查询',
+#                'ctl00$ContentPlaceHolder1$InputHashType':'md5',
+#                '__VIEWSTATEGENERATOR':'CA0B0334'
+#                }
+#     url = 'https://cmd5.com/'
+#     reHtml = requests.post(url=url,headers=header,data=hashData).content.decode()
+#     # print(reHtml)
+#
+#     pattern = re.compile(r'id="__VIEWSTATE"(.*?) />',re.S)
+#     VIEWSTATE = re.findall(pattern,reHtml)[0]
+#     pattern = re.compile(r'value="(.*?)"',re.S)
+#     VIEWSTATE = re.findall(pattern,VIEWSTATE)[0]
+#     hashData['__VIEWSTATE'] = VIEWSTATE
+#
+#     pattern = re.compile(r'id="HiddenFieldAliCode"(.*?)/>', re.S)
+#     HiddenFieldAliCode = re.findall(pattern, reHtml)[0].replace(' ','')
+#     if HiddenFieldAliCode:
+#         pattern = re.compile(r'value="(.*?)"', re.S)
+#         HiddenFieldAliCode = re.findall(pattern, HiddenFieldAliCode)[0]
+#         hashData['ctl00$ContentPlaceHolder1$HiddenFieldAliCode'] = HiddenFieldAliCode
+#     print(HiddenFieldAliCode)
+#
+#     pattern = re.compile(r'id="ctl00_ContentPlaceHolder1_HiddenField1"(.*?)/>', re.S)
+#     HiddenField1 = re.findall(pattern, reHtml)[0].replace(' ','')
+#     if HiddenField1:
+#         pattern = re.compile(r'value="(.*?)"', re.S)
+#         HiddenField1 = re.findall(pattern, HiddenField1)[0]
+#         hashData['ctl00$ContentPlaceHolder1$HiddenField1'] = HiddenField1
+#     print(HiddenField1)
+#
+#     pattern = re.compile(r'id="ctl00_ContentPlaceHolder1_HiddenField2"(.*?)/>', re.S)
+#     HiddenField2 = re.findall(pattern, reHtml)[0].replace(' ','')
+#     if HiddenField2:
+#         pattern = re.compile(r'value="(.*?)"', re.S)
+#         HiddenField2 = re.findall(pattern, HiddenField2)[0]
+#         hashData['ctl00$ContentPlaceHolder1$HiddenField2'] = HiddenField2
+#     print(HiddenField2)
+#     print(hashData)
+#     reHtml = requests.post(url=url, headers=header, data=hashData).content.decode()
+#     print(reHtml)
 
 # somd5.com接口解密hash
 def hashDecrypt_somd5_com(hash):
@@ -218,28 +269,85 @@ def hashDecrypt_tool_chinaz_com(hash):
         resultJson['text'] = '未知错误'
     return resultJson
 
+# ttmd5.com接口解密hash
+def hashDecrypt_ttmd5_com(hash):
+    resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
+    resultJson['source'] = 'ttmd5.com'
+    url = 'http://www.ttmd5.com/do.php?c=Decode&m=getMD5&md5=' + hash
+    reJson = json.loads(requests.get(url=url,headers=header).content.decode())
+    if reJson['flag'] ==1:
+        resultJson['data'] = reJson['plain']
+        resultJson['text'] = '破解成功'
+        resultJson['type'] = reJson['type']
+        if reJson['msg']:
+            resultJson['text'] = reJson['msg']
+        else:
+            resultJson['text'] = '破解成功'
+    else:
+        resultJson['text'] = reJson['msg']
+    return resultJson
+
+# pmd5.com接口解密hash
+def hashDecrypt_pmd5_com(hash):
+    resultJson = {'data': '', 'type': '', 'source': '', 'text': ''}
+    resultJson['source'] = 'pmd5.com'
+    url = 'https://api.pmd5.com/pmd5api/pmd5?pwd=' + hash
+    reJson = json.loads(requests.get(url=url,headers=header).content.decode())
+    # print(reJson)
+    if reJson['code'] == 0:
+        key = list(reJson['result'])[0]
+        resultJson['data'] = reJson['result'][key]
+        resultJson['type'] = 'md5'
+        resultJson['text'] = '破解成功'
+    else:
+        resultJson['text'] = '破解失败'
+    return resultJson
+
+
+
+
+
+
+
+
+
 ########################################################################################################################
 
 
 if __name__ == '__main__':
-    hash_data = input('输入hash：')
-    result = hashDecrypt_somd5_com(hash_data)
-    print(result)
-    result = hashDecrypt_md5decrypt_net(hash_data)
-    print(result)
-    result = hashDecrypt_hashtoolkit_com(hash_data)
-    print(result)
-    result = hashDecrypt_md5online_org(hash_data)
-    print(result)
-    result = hashDecrypt_md5online_es(hash_data)
-    print(result)
-    result = hashDecrypt_md5_my_addr(hash_data)
-    print(result)
-    result = hashDecrypt_md5_ovh(hash_data)
-    print(result)
-    result = hashDecrypt_tool_chinaz_com(hash_data)
-    print(result)
-
+    print('粘贴板内容为：')
+    print(pyperclip.paste())    #打印粘贴板内容
+    print('是否选择破解粘贴板的值？')
+    flag = input('否-请输入0 \n是-请输入回车\n')
+    if flag == 0 or flag == '0':
+        hash_data = input('输入hash：')
+    else:
+        hash_data = pyperclip.paste()
+    try:
+        result = hashDecrypt_somd5_com(hash_data)
+        print(result)
+        result = hashDecrypt_md5decrypt_net(hash_data)
+        print(result)
+        result = hashDecrypt_hashtoolkit_com(hash_data)
+        print(result)
+        result = hashDecrypt_md5online_org(hash_data)
+        print(result)
+        result = hashDecrypt_md5online_es(hash_data)
+        print(result)
+        result = hashDecrypt_md5_my_addr(hash_data)
+        print(result)
+        result = hashDecrypt_md5_ovh(hash_data)
+        print(result)
+        result = hashDecrypt_tool_chinaz_com(hash_data)
+        print(result)
+        result = hashDecrypt_ttmd5_com(hash_data)
+        print(result)
+        result = hashDecrypt_pmd5_com(hash_data)
+        print(result)
+        # result = hashDecrypt_xmd5_com(hash_data)
+        # print(result)
+    except:
+        print('发生错误（可能原因：开启了系统代理）')
 
     # 设置休眠时间
     sleepTime = 20
