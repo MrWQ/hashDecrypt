@@ -77,6 +77,10 @@ def hashDecrypt_somd5_com(hash):
         resultJson['data'] = reJson['data']
     else:
         pass
+    if 'type' in reJson:
+        resultJson['type'] = reJson['type']
+    else:
+        pass
     if reJson['err'] ==0:
         resultJson['text'] = '破解成功'
     elif reJson['err'] ==1:
@@ -89,7 +93,6 @@ def hashDecrypt_somd5_com(hash):
         resultJson['text'] = 'err=4'
     elif reJson['err'] ==5:
         resultJson['text'] = '验证失败'
-    resultJson['type'] = reJson['type']
     return resultJson
 
 # md5decrypt.net接口解密hash
@@ -433,38 +436,64 @@ def hashDecrypt_3464_com(hash):
 if __name__ == '__main__':
 
     print('检测到粘贴板内容为：')
-    print(pyperclip.paste())    #打印粘贴板内容
+    clipboard_data = pyperclip.paste()
+    print(clipboard_data)    #打印粘贴板内容
     print('是否选择破解粘贴板的值？')
     flag = input('否-请输入0 \n是-请输入回车\n')
     if flag == 0 or flag == '0':
         hash_data = input('输入hash：')
     else:
-        hash_data = pyperclip.paste()
+        hash_data = clipboard_data
     try:
-        result = hashDecrypt_somd5_com(hash_data)
-        print(result)
-        result = hashDecrypt_md5decrypt_net(hash_data)
-        print(result)
-        result = hashDecrypt_hashtoolkit_com(hash_data)
-        print(result)
-        result = hashDecrypt_md5online_org(hash_data)
-        print(result)
-        result = hashDecrypt_md5online_es(hash_data)
-        print(result)
-        result = hashDecrypt_md5_my_addr(hash_data)
-        print(result)
-        result = hashDecrypt_md5_ovh(hash_data)
-        print(result)
-        result = hashDecrypt_tool_chinaz_com(hash_data)
-        print(result)
-        result = hashDecrypt_ttmd5_com(hash_data)
-        print(result)
-        result = hashDecrypt_pmd5_com(hash_data)
-        print(result)
-        result = hashDecrypt_chamd5_org(hash_data)
-        print(result)
-        result = hashDecrypt_3464_com(hash_data)
-        print(result)
+        try:
+
+            print(hashDecrypt_somd5_com(hash_data))
+        except:
+            print('hashDecrypt_somd5_com ERROR')
+        try:
+            print(hashDecrypt_md5decrypt_net(hash_data))
+        except:
+            print('hashDecrypt_md5decrypt_net ERROR')
+        try:
+            print(hashDecrypt_hashtoolkit_com(hash_data))
+        except:
+            print('hashDecrypt_hashtoolkit_com ERROR')
+        try:
+            print(hashDecrypt_md5online_org(hash_data))
+        except:
+            print('hashDecrypt_md5online_org ERROR')
+        try:
+            print(hashDecrypt_md5online_es(hash_data))
+        except:
+            print('hashDecrypt_md5online_es ERROR')
+        try:
+            print(hashDecrypt_md5_my_addr(hash_data))
+        except:
+            print('hashDecrypt_md5_my_addr ERROR')
+        try:
+            print(hashDecrypt_md5_ovh(hash_data))
+        except:
+            print('hashDecrypt_md5_ovh ERROR')
+        try:
+            print(hashDecrypt_tool_chinaz_com(hash_data))
+        except:
+            print('hashDecrypt_tool_chinaz_com ERROR')
+        try:
+            print(hashDecrypt_ttmd5_com(hash_data))
+        except:
+            print('hashDecrypt_ttmd5_com ERROR')
+        try:
+            print(hashDecrypt_pmd5_com(hash_data))
+        except:
+            print('hashDecrypt_pmd5_com ERROR')
+        try:
+            print(hashDecrypt_chamd5_org(hash_data))
+        except:
+            print('hashDecrypt_chamd5_org ERROR')
+        try:
+            print(hashDecrypt_3464_com(hash_data))
+        except:
+            print('hashDecrypt_3464_com ERROR')
     except:
         print('发生错误（可能的已知原因：开启了系统代理）')
 
